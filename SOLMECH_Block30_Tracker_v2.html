@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>SOLMECH · Block 30</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --red: #E30613; --black: #1A1A1A; --graphite: #303030;
+  --grey-dark: #4D4D4D; --grey-mid: #808080; --grey-light: #D9D9D9;
+  --grey-soft: #F2F2F2; --white: #FFFFFF;
+  --green-bg: #EAF3DE; --green-text: #3B6D11; --green-border: #97C459;
+  --amber-bg: #FAEEDA; --amber-text: #854F0B;
+  --blue-bg: #E6F1FB; --blue-text: #185FA5;
+  --radius: 10px; --radius-lg: 14px;
+}
+html, body { height: 100%; background: var(--grey-soft); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 16px; color: var(--graphite); -webkit-tap-highlight-color: transparent; }
+#app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--grey-soft); display: flex; flex-direction: column; }
+
+/* HEADER */
+.header { background: var(--black); color: #fff; padding: 14px 16px 12px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 10; }
+.header-back { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; padding: 0 8px 0 0; line-height: 1; display: none; }
+.header-back.visible { display: block; }
+.header-info h1 { font-size: 15px; font-weight: 600; color: #fff; line-height: 1.2; }
+.header-info .sub { font-size: 11px; color: #aaa; margin-top: 2px; }
+.red-bar { height: 3px; background: var(--red); flex-shrink: 0; }
+
+/* IDENTITY BANNER */
+.id-banner { background: var(--black); color: #fff; padding: 10px 16px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+.id-banner i { color: var(--red); font-size: 14px; }
+.id-banner .id-main { font-weight: 600; font-size: 13px; }
+.id-banner .id-sub { color: #aaa; font-size: 11px; margin-top: 1px; }
+.id-banner .change-btn { margin-left: auto; font-size: 11px; color: #aaa; cursor: pointer; white-space: nowrap; }
+
+.screen { flex: 1; padding: 16px; overflow-y: auto; }
+
+/* ONBOARDING */
+.logo-area { text-align: center; padding: 28px 0 20px; }
+.logo-text { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: var(--black); }
+.logo-text span { color: var(--red); }
+.logo-sub { font-size: 13px; color: var(--grey-mid); margin-top: 4px; }
+.section-label { font-size: 11px; font-weight: 600; color: var(--grey-mid); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+
+/* DISCIPLINE CARDS */
+.disc-grid { display: flex; flex-direction: column; gap: 8px; }
+.disc-card { background: var(--white); border-radius: var(--radius-lg); border: 1.5px solid var(--grey-light); padding: 16px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: border-color 0.15s; }
+.disc-card:active { background: var(--grey-soft); }
+.disc-card.selected { border-color: var(--black); background: var(--white); }
+.disc-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.disc-label { font-size: 16px; font-weight: 600; color: var(--black); }
+.disc-desc { font-size: 12px; color: var(--grey-mid); margin-top: 2px; }
+.disc-check { margin-left: auto; font-size: 20px; color: var(--black); display: none; }
+.disc-card.selected .disc-check { display: block; }
+
+/* NAME / EQUIPMENT FORM */
+.form-card { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--grey-light); padding: 16px; margin-bottom: 12px; }
+.form-field { margin-bottom: 16px; }
+.form-field:last-child { margin-bottom: 0; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--grey-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: block; }
+.form-input { width: 100%; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--grey-light); font-size: 15px; font-family: inherit; color: var(--black); background: var(--white); -webkit-appearance: none; }
+.form-input:focus { outline: none; border-color: var(--black); }
+
+/* BUTTONS */
+.btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 1px solid var(--grey-light); background: var(--white); color: var(--black); font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; margin-top: 8px; }
+.btn.btn-primary { background: var(--black); color: #fff; border-color: var(--black); }
+.btn.btn-primary:active { background: var(--graphite); }
+.btn.btn-sm { padding: 11px; font-size: 14px; font-weight: 500; flex: 1; margin-top: 0; }
+
+/* LIST */
+.list { display: flex; flex-direction: column; gap: 8px; }
+.list-item { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--grey-light); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+.list-item:active { background: var(--grey-soft); }
+.li-label { font-size: 15px; font-weight: 600; color: var(--black); }
+.li-meta { font-size: 12px; color: var(--grey-mid); margin-top: 3px; }
+.li-right { display: flex; align-items: center; gap: 10px; }
+.chevron { color: var(--grey-light); font-size: 18px; }
+
+/* PILLS */
+.pill { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+.pill-done { background: var(--green-bg); color: var(--green-text); }
+.pill-part { background: var(--amber-bg); color: var(--amber-text); }
+.pill-none { background: var(--grey-soft); color: var(--grey-mid); border: 1px solid var(--grey-light); }
+
+/* SUMMARY BAR */
+.summary-bar { background: var(--white); border-radius: var(--radius); border: 1px solid var(--grey-light); padding: 12px 14px; margin-bottom: 14px; display: flex; }
+.stat { flex: 1; text-align: center; }
+.stat + .stat { border-left: 1px solid var(--grey-light); }
+.stat-val { font-size: 20px; font-weight: 700; color: var(--black); }
+.stat-val.green { color: var(--green-text); }
+.stat-val.amber { color: var(--amber-text); }
+.stat-lbl { font-size: 10px; color: var(--grey-mid); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+/* PILE GRID */
+.actions-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.pile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.pile-btn { background: var(--white); border: 1px solid var(--grey-light); border-radius: var(--radius); padding: 12px 6px; text-align: center; cursor: pointer; }
+.pile-btn:active { transform: scale(0.97); }
+.pile-btn .p-id { font-size: 14px; font-weight: 700; color: var(--black); }
+.pile-btn .p-phase { font-size: 10px; color: var(--grey-mid); margin-top: 3px; min-height: 14px; }
+.pile-btn.state-complete { background: var(--green-bg); border-color: var(--green-border); }
+.pile-btn.state-complete .p-id { color: var(--green-text); }
+.pile-btn.state-complete .p-phase { color: #639922; }
+.pile-btn.state-qa { background: var(--blue-bg); border-color: #85B7EB; }
+.pile-btn.state-qa .p-id { color: var(--blue-text); }
+.pile-btn.state-piling { background: #FAECE7; border-color: #F0997B; }
+.pile-btn.state-piling .p-id { color: #993C1D; }
+.pile-btn.state-pin,.pile-btn.state-drill,.pile-btn.state-sand { background: #FBEAF0; border-color: #ED93B1; }
+.pile-btn.state-pin .p-id,.pile-btn.state-drill .p-id,.pile-btn.state-sand .p-id { color: #993556; }
+.pile-btn.selected { outline: 3px solid var(--red); outline-offset: 1px; }
+
+/* PHASE PANEL */
+.phase-panel { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--grey-light); padding: 14px; margin-bottom: 14px; }
+.phase-panel-title { font-size: 13px; color: var(--grey-mid); margin-bottom: 12px; }
+.phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.phase-opt { padding: 11px 10px; border-radius: var(--radius); border: 1px solid var(--grey-light); background: var(--grey-soft); cursor: pointer; text-align: center; font-size: 13px; font-weight: 500; color: var(--grey-dark); display: flex; align-items: center; justify-content: center; gap: 7px; }
+.phase-opt.sel { border: 2px solid var(--black); background: var(--white); color: var(--black); }
+.phase-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.ts-label { font-size: 11px; color: var(--grey-mid); text-align: center; padding-top: 8px; }
+
+.step-indicator { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey-light); }
+.step-dot.active { background: var(--black); }
+.step-dot.done { background: var(--red); }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header" id="header">
+    <button class="header-back" id="back-btn" onclick="goBack()" aria-label="Back">
+      <i class="ti ti-arrow-left"></i>
+    </button>
+    <div class="header-info">
+      <h1 id="header-title">Block 30</h1>
+      <div class="sub" id="header-sub">Maryvale Solar Farm · SOLMECH</div>
+    </div>
+  </div>
+  <div class="red-bar"></div>
+  <div class="id-banner" id="id-banner" style="display:none">
+    <i class="ti ti-user-circle"></i>
+    <div>
+      <div class="id-main" id="id-main"></div>
+      <div class="id-sub" id="id-sub"></div>
+    </div>
+    <span class="change-btn" onclick="changeIdentity()">Change</span>
+  </div>
+  <div class="screen" id="screen"></div>
+</div>
+
+<script>
+const PHASES = [
+  { id: 'pin',      label: 'Pin',       color: '#D4537E' },
+  { id: 'drill',    label: 'Drill',     color: '#BA7517' },
+  { id: 'sand',     label: 'Stab Sand', color: '#888780' },
+  { id: 'piling',   label: 'Piling',    color: '#D85A30' },
+  { id: 'qa',       label: 'QA',        color: '#378ADD' },
+  { id: 'complete', label: 'Complete',  color: '#639922' }
+];
+
+const DISCIPLINES = [
+  { id: 'SURVEY',    label: 'Survey',    icon: 'ti-map-pin',    color: '#E6F1FB', iconColor: '#185FA5', desc: 'Setting out pile locations' },
+  { id: 'DRILLING',  label: 'Drilling',  icon: 'ti-drill',      color: '#FAEEDA', iconColor: '#854F0B', desc: 'Predrilling operations' },
+  { id: 'STAB_SAND', label: 'Stab Sand', icon: 'ti-bucket',     color: '#F1EFE8', iconColor: '#5F5E5A', desc: 'Stabilised sand placement' },
+  { id: 'PILING',    label: 'Piling',    icon: 'ti-hammer',     color: '#FAECE7', iconColor: '#993C1D', desc: 'Pile driving operations' },
+  { id: 'QA',        label: 'QA',        icon: 'ti-clipboard-check', color: '#EAF3DE', iconColor: '#3B6D11', desc: 'Quality assurance inspection' },
+];
+
+const ALL_PILES = `30-1-1-A
+30-1-1-B
+30-1-1-C
+30-1-1-D
+30-1-1-E
+30-1-1-F
+30-1-1-G
+30-1-1-H
+30-1-1-I
+30-1-1-J
+30-1-1-K
+30-1-1-L
+30-1-1-M
+30-1-1-N
+30-1-1-O
+30-1-2-A
+30-1-2-B
+30-1-2-C
+30-1-2-D
+30-1-2-E
+30-1-2-F
+30-1-2-G
+30-1-2-H
+30-1-2-I
+30-1-2-J
+30-1-2-K
+30-1-2-L
+30-1-2-M
+30-1-2-N
+30-1-2-O
+30-1-3-A
+30-1-3-B
+30-1-3-C
+30-1-3-D
+30-1-3-E
+30-1-3-F
+30-1-3-G
+30-1-3-H
+30-1-3-I
+30-1-3-J
+30-1-3-K
+30-1-3-L
+30-1-3-M
+30-1-3-N
+30-1-3-O
+30-1-4-A
+30-1-4-B
+30-1-4-C
+30-1-4-D
+30-1-4-E
+30-1-4-F
+30-1-4-G
+30-1-4-H
+30-1-4-I
+30-1-4-J
+30-1-4-K
+30-1-4-L
+30-1-4-M
+30-1-4-N
+30-1-4-O
+30-1-5-A
+30-1-5-B
+30-1-5-C
+30-1-5-D
+30-1-5-E
+30-1-5-F
+30-1-5-G
+30-1-5-H
+30-1-5-I
+30-1-5-J
+30-1-5-K
+30-1-5-L
+30-1-5-M
+30-1-5-N
+30-1-5-O
+30-1-6-A
+30-1-6-B
+30-1-6-C
+30-1-6-D
+30-1-6-E
+30-1-6-F
+30-1-6-G
+30-1-6-H
+30-1-6-I
+30-1-6-J
+30-1-6-K
+30-1-6-L
+30-1-6-M
+30-1-6-N
+30-1-6-O
+30-1-7-A
+30-1-7-B
+30-1-7-C
+30-1-7-D
+30-1-7-E
+30-1-7-F
+30-1-7-G
+30-1-7-H
+30-1-7-I
+30-1-7-J
+30-1-7-K
+30-1-7-L
+30-1-7-M
+30-1-7-N
+30-1-7-O
+30-1-8-A
+30-1-8-B
+30-1-8-C
+30-1-8-D
+30-1-8-E
+30-1-8-F
+30-1-8-G
+30-1-8-H
+30-1-8-I
+30-1-8-J
+30-1-8-K
+30-1-8-L
+30-1-8-M
+30-1-8-N
+30-1-8-O
+30-1-9-A
+30-1-9-B
+30-1-9-C
+30-1-9-D
+30-1-9-E
+30-1-9-F
+30-1-9-G
+30-1-9-H
+30-1-9-I
+30-1-9-J
+30-1-9-K
+30-1-9-L
+30-1-9-M
+30-1-9-N
+30-1-9-O
+30-1-10-A
+30-1-10-B
+30-1-10-C
+30-1-10-D
+30-1-10-E
+30-1-10-F
+30-1-10-G
+30-1-10-H
+30-1-10-I
+30-1-10-J
+30-1-10-K
+30-1-10-L
+30-1-10-M
+30-1-10-N
+30-1-10-O
+30-1-11-A
+30-1-11-B
+30-1-11-C
+30-1-11-D
+30-1-11-E
+30-1-11-F
+30-1-11-G
+30-1-11-H
+30-1-11-I
+30-1-11-J
+30-1-11-K
+30-1-11-L
+30-1-11-M
+30-1-11-N
+30-1-11-O
+30-1-12-A
+30-1-12-B
+30-1-12-C
+30-1-12-D
+30-1-12-E
+30-1-12-F
+30-1-12-G
+30-1-12-H
+30-1-12-I
+30-1-12-J
+30-1-12-K
+30-1-12-L
+30-1-12-M
+30-1-12-N
+30-1-12-O
+30-1-13-A
+30-1-13-B
+30-1-13-C
+30-1-13-D
+30-1-13-E
+30-1-13-F
+30-1-13-G
+30-1-13-H
+30-1-13-I
+30-1-13-J
+30-1-13-K
+30-1-13-L
+30-1-13-M
+30-1-13-N
+30-1-13-O
+30-1-14-A
+30-1-14-B
+30-1-14-C
+30-1-14-D
+30-1-14-E
+30-1-14-F
+30-1-14-G
+30-1-14-H
+30-1-14-I
+30-1-14-J
+30-1-14-K
+30-1-14-L
+30-1-14-M
+30-1-14-N
+30-1-14-O
+30-1-15-A
+30-1-15-B
+30-1-15-C
+30-1-15-D
+30-1-15-E
+30-1-15-F
+30-1-15-G
+30-1-15-H
+30-1-15-I
+30-1-15-J
+30-1-15-K
+30-1-15-L
+30-1-15-M
+30-1-15-N
+30-1-15-O
+30-1-16-A
+30-1-16-B
+30-1-16-C
+30-1-16-D
+30-1-16-E
+30-1-16-F
+30-1-16-G
+30-1-16-H
+30-1-16-I
+30-1-16-J
+30-1-16-K
+30-1-16-L
+30-1-16-M
+30-1-16-N
+30-1-16-O
+30-1-17-A
+30-1-17-B
+30-1-17-C
+30-1-17-D
+30-1-17-E
+30-1-17-F
+30-1-17-G
+30-1-17-H
+30-1-17-I
+30-1-17-J
+30-1-17-K
+30-1-17-L
+30-1-17-M
+30-1-17-N
+30-1-17-O
+30-1-18-H
+30-1-18-I
+30-1-18-J
+30-1-18-K
+30-1-18-L
+30-1-18-M
+30-1-18-N
+30-1-18-O
+30-1-19-H
+30-1-19-I
+30-1-19-J
+30-1-19-K
+30-1-19-L
+30-1-19-M
+30-1-19-N
+30-1-19-O
+30-1-20-H
+30-1-20-I
+30-1-20-J
+30-1-20-K
+30-1-20-L
+30-1-20-M
+30-1-20-N
+30-1-20-O
+30-1-21-H
+30-1-21-I
+30-1-21-J
+30-1-21-K
+30-1-21-L
+30-1-21-M
+30-1-21-N
+30-1-21-O
+30-1-22-H
+30-1-22-I
+30-1-22-J
+30-1-22-K
+30-1-22-L
+30-1-22-M
+30-1-22-N
+30-1-22-O
+30-2-1-A
+30-2-1-B
+30-2-1-C
+30-2-1-D
+30-2-1-E
+30-2-1-F
+30-2-1-G
+30-2-1-H
+30-2-1-I
+30-2-1-J
+30-2-1-K
+30-2-1-L
+30-2-1-M
+30-2-1-N
+30-2-1-O
+30-2-2-A
+30-2-2-B
+30-2-2-C
+30-2-2-D
+30-2-2-E
+30-2-2-F
+30-2-2-G
+30-2-2-H
+30-2-2-I
+30-2-2-J
+30-2-2-K
+30-2-2-L
+30-2-2-M
+30-2-2-N
+30-2-2-O
+30-2-3-A
+30-2-3-B
+30-2-3-C
+30-2-3-D
+30-2-3-E
+30-2-3-F
+30-2-3-G
+30-2-3-H
+30-2-3-I
+30-2-3-J
+30-2-3-K
+30-2-3-L
+30-2-3-M
+30-2-3-N
+30-2-3-O
+30-2-4-A
+30-2-4-B
+30-2-4-C
+30-2-4-D
+30-2-4-E
+30-2-4-F
+30-2-4-G
+30-2-4-H
+30-2-4-I
+30-2-4-J
+30-2-4-K
+30-2-4-L
+30-2-4-M
+30-2-4-N
+30-2-4-O
+30-2-5-A
+30-2-5-B
+30-2-5-C
+30-2-5-D
+30-2-5-E
+30-2-5-F
+30-2-5-G
+30-2-5-H
+30-2-5-I
+30-2-5-J
+30-2-5-K
+30-2-5-L
+30-2-5-M
+30-2-5-N
+30-2-5-O
+30-2-6-A
+30-2-6-B
+30-2-6-C
+30-2-6-D
+30-2-6-E
+30-2-6-F
+30-2-6-G
+30-2-6-H
+30-2-6-I
+30-2-6-J
+30-2-6-K
+30-2-6-L
+30-2-6-M
+30-2-6-N
+30-2-6-O
+30-2-7-A
+30-2-7-B
+30-2-7-C
+30-2-7-D
+30-2-7-E
+30-2-7-F
+30-2-7-G
+30-2-7-H
+30-2-7-I
+30-2-7-J
+30-2-7-K
+30-2-7-L
+30-2-7-M
+30-2-7-N
+30-2-7-O
+30-2-8-A
+30-2-8-B
+30-2-8-C
+30-2-8-D
+30-2-8-E
+30-2-8-F
+30-2-8-G
+30-2-8-H
+30-2-8-I
+30-2-8-J
+30-2-8-K
+30-2-8-L
+30-2-8-M
+30-2-8-N
+30-2-8-O
+30-2-9-A
+30-2-9-B
+30-2-9-C
+30-2-9-D
+30-2-9-E
+30-2-9-F
+30-2-9-G
+30-2-9-H
+30-2-9-I
+30-2-9-J
+30-2-9-K
+30-2-9-L
+30-2-9-M
+30-2-9-N
+30-2-9-O
+30-2-10-A
+30-2-10-B
+30-2-10-C
+30-2-10-D
+30-2-10-E
+30-2-10-F
+30-2-10-G
+30-2-10-H
+30-2-10-I
+30-2-10-J
+30-2-10-K
+30-2-10-L
+30-2-10-M
+30-2-10-N
+30-2-10-O
+30-2-11-A
+30-2-11-B
+30-2-11-C
+30-2-11-D
+30-2-11-E
+30-2-11-F
+30-2-11-G
+30-2-11-H
+30-2-11-I
+30-2-11-J
+30-2-11-K
+30-2-11-L
+30-2-11-M
+30-2-11-N
+30-2-11-O
+30-2-12-A
+30-2-12-B
+30-2-12-C
+30-2-12-D
+30-2-12-E
+30-2-12-F
+30-2-12-G
+30-2-12-H
+30-2-12-I
+30-2-12-J
+30-2-12-K
+30-2-12-L
+30-2-12-M
+30-2-12-N
+30-2-12-O
+30-2-13-A
+30-2-13-B
+30-2-13-C
+30-2-13-D
+30-2-13-E
+30-2-13-F
+30-2-13-G
+30-2-13-H
+30-2-13-I
+30-2-13-J
+30-2-13-K
+30-2-13-L
+30-2-14-A
+30-2-14-B
+30-2-14-C
+30-2-14-D
+30-2-14-E
+30-2-14-F
+30-2-14-G
+30-2-14-H
+30-2-14-I
+30-2-14-J
+30-2-14-K
+30-2-14-L
+30-2-15-A
+30-2-15-B
+30-2-15-C
+30-2-15-D
+30-2-15-E
+30-2-15-F
+30-2-15-G
+30-2-15-H
+30-2-15-I
+30-2-15-J
+30-2-15-K
+30-2-15-L
+30-2-16-A
+30-2-16-B
+30-2-16-C
+30-2-16-D
+30-2-16-E
+30-2-16-F
+30-2-16-G
+30-2-16-H
+30-2-17-D
+30-2-17-E
+30-2-17-F
+30-2-17-G
+30-2-17-H
+30-2-17-I
+30-2-17-J
+30-2-17-K
+30-2-17-L
+30-2-17-M
+30-2-17-N
+30-2-17-O
+30-2-18-A
+30-2-18-B
+30-2-18-C
+30-2-18-D
+30-2-18-E
+30-2-18-F
+30-2-18-G
+30-2-18-H
+30-2-18-I
+30-2-18-J
+30-2-18-K
+30-2-18-L
+30-2-18-M
+30-2-18-N
+30-2-18-O
+30-2-19-A
+30-2-19-B
+30-2-19-C
+30-2-19-D
+30-2-19-E
+30-2-19-F
+30-2-19-G
+30-2-19-H
+30-2-19-I
+30-2-19-J
+30-2-19-K
+30-2-19-L
+30-2-19-M
+30-2-19-N
+30-2-19-O
+30-2-20-A
+30-2-20-B
+30-2-20-C
+30-2-20-D
+30-2-20-E
+30-2-20-F
+30-2-20-G
+30-2-20-H
+30-2-20-I
+30-2-20-J
+30-2-20-K
+30-2-20-L
+30-2-20-M
+30-2-20-N
+30-2-20-O
+30-2-21-A
+30-2-21-B
+30-2-21-C
+30-2-21-D
+30-2-21-E
+30-2-21-F
+30-2-21-G
+30-2-21-H
+30-2-21-I
+30-2-21-J
+30-2-21-K
+30-2-21-L
+30-2-21-M
+30-2-21-N
+30-2-21-O
+30-2-22-A
+30-2-22-B
+30-2-22-C
+30-2-22-D
+30-2-22-E
+30-2-22-F
+30-2-22-G
+30-2-22-H
+30-2-22-I
+30-2-22-J
+30-2-22-K
+30-2-22-L
+30-2-22-M
+30-2-22-N
+30-2-22-O
+30-2-23-A
+30-2-23-B
+30-2-23-C
+30-2-23-D
+30-2-23-E
+30-2-23-F
+30-2-23-G
+30-2-23-H
+30-2-23-I
+30-2-23-J
+30-2-23-K
+30-2-23-L
+30-2-23-M
+30-2-23-N
+30-2-23-O
+30-2-24-A
+30-2-24-B
+30-2-24-C
+30-2-24-D
+30-2-24-E
+30-2-24-F
+30-2-24-G
+30-2-24-H
+30-2-24-I
+30-2-24-J
+30-2-24-K
+30-2-24-L
+30-2-24-M
+30-2-24-N
+30-2-24-O
+30-2-25-A
+30-2-25-B
+30-2-25-C
+30-2-25-D
+30-2-25-E
+30-2-25-F
+30-2-25-G
+30-2-25-H
+30-2-25-I
+30-2-25-J
+30-2-25-K
+30-2-25-L
+30-2-25-M
+30-2-25-N
+30-2-25-O
+30-2-26-A
+30-2-26-B
+30-2-26-C
+30-2-26-D
+30-2-26-E
+30-2-26-F
+30-2-26-G
+30-2-26-H
+30-2-26-I
+30-2-26-J
+30-2-26-K
+30-2-26-L
+30-2-26-M
+30-2-26-N
+30-2-26-O
+30-2-27-A
+30-2-27-B
+30-2-27-C
+30-2-27-D
+30-2-27-E
+30-2-27-F
+30-2-27-G
+30-2-27-H
+30-2-27-I
+30-2-27-J
+30-2-27-K
+30-2-27-L
+30-2-27-M
+30-2-27-N
+30-2-27-O
+30-2-28-A
+30-2-28-B
+30-2-28-C
+30-2-28-D
+30-2-28-E
+30-2-28-F
+30-2-28-G
+30-2-28-H
+30-2-28-I
+30-2-28-J
+30-2-28-K
+30-2-28-L
+30-2-28-M
+30-2-28-N
+30-2-28-O
+30-2-29-A
+30-2-29-B
+30-2-29-C
+30-2-29-D
+30-2-29-E
+30-2-29-F
+30-2-29-G
+30-2-29-H
+30-2-29-I
+30-2-29-J
+30-2-29-K
+30-2-29-L
+30-2-29-M
+30-2-29-N
+30-2-29-O
+30-2-30-A
+30-2-30-B
+30-2-30-C
+30-2-30-D
+30-2-30-E
+30-2-30-F
+30-2-30-G
+30-2-30-H
+30-2-30-I
+30-2-30-J
+30-2-30-K
+30-2-30-L
+30-2-30-M
+30-2-30-N
+30-2-30-O
+30-2-31-H
+30-2-31-I
+30-2-31-J
+30-2-31-K
+30-2-31-L
+30-2-31-M
+30-2-31-N
+30-2-31-O
+30-2-32-H
+30-2-32-I
+30-2-32-J
+30-2-32-K
+30-2-32-L
+30-2-32-M
+30-2-32-N
+30-2-32-O
+30-2-33-H
+30-2-33-I
+30-2-33-J
+30-2-33-K
+30-2-33-L
+30-2-33-M
+30-2-33-N
+30-2-33-O
+30-2-34-H
+30-2-34-I
+30-2-34-J
+30-2-34-K
+30-2-34-L
+30-2-34-M
+30-2-34-N
+30-2-34-O
+30-2-35-H
+30-2-35-I
+30-2-35-J
+30-2-35-K
+30-2-35-L
+30-2-35-M
+30-2-35-N
+30-2-35-O
+30-2-36-H
+30-2-36-I
+30-2-36-J
+30-2-36-K
+30-2-36-L
+30-2-36-M
+30-2-36-N
+30-2-36-O
+30-2-37-H
+30-2-37-I
+30-2-37-J
+30-2-37-K
+30-2-37-L
+30-2-37-M
+30-2-37-N
+30-2-37-O
+30-3-1-A
+30-3-1-B
+30-3-1-C
+30-3-1-D
+30-3-1-E
+30-3-1-F
+30-3-1-G
+30-3-1-H
+30-3-1-I
+30-3-1-J
+30-3-1-K
+30-3-1-L
+30-3-1-M
+30-3-1-N
+30-3-1-O
+30-3-2-A
+30-3-2-B
+30-3-2-C
+30-3-2-D
+30-3-2-E
+30-3-2-F
+30-3-2-G
+30-3-2-H
+30-3-2-I
+30-3-2-J
+30-3-2-K
+30-3-2-L
+30-3-2-M
+30-3-2-N
+30-3-2-O
+30-3-3-A
+30-3-3-B
+30-3-3-C
+30-3-3-D
+30-3-3-E
+30-3-3-F
+30-3-3-G
+30-3-3-H
+30-3-3-I
+30-3-3-J
+30-3-3-K
+30-3-3-L
+30-3-3-M
+30-3-3-N
+30-3-3-O
+30-3-4-A
+30-3-4-B
+30-3-4-C
+30-3-4-D
+30-3-4-E
+30-3-4-F
+30-3-4-G
+30-3-4-H
+30-3-4-I
+30-3-4-J
+30-3-4-K
+30-3-4-L
+30-3-4-M
+30-3-4-N
+30-3-4-O
+30-3-5-A
+30-3-5-B
+30-3-5-C
+30-3-5-D
+30-3-5-E
+30-3-5-F
+30-3-5-G
+30-3-5-H
+30-3-5-I
+30-3-5-J
+30-3-5-K
+30-3-5-L
+30-3-5-M
+30-3-5-N
+30-3-5-O
+30-3-6-A
+30-3-6-B
+30-3-6-C
+30-3-6-D
+30-3-6-E
+30-3-6-F
+30-3-6-G
+30-3-6-H
+30-3-6-I
+30-3-6-J
+30-3-6-K
+30-3-6-L
+30-3-6-M
+30-3-6-N
+30-3-6-O
+30-3-7-A
+30-3-7-B
+30-3-7-C
+30-3-7-D
+30-3-7-E
+30-3-7-F
+30-3-7-G
+30-3-7-H
+30-3-7-I
+30-3-7-J
+30-3-7-K
+30-3-7-L
+30-3-7-M
+30-3-7-N
+30-3-7-O
+30-3-8-A
+30-3-8-B
+30-3-8-C
+30-3-8-D
+30-3-8-E
+30-3-8-F
+30-3-8-G
+30-3-8-H
+30-3-8-I
+30-3-8-J
+30-3-8-K
+30-3-8-L
+30-3-8-M
+30-3-8-N
+30-3-8-O
+30-3-9-A
+30-3-9-B
+30-3-9-C
+30-3-9-D
+30-3-9-E
+30-3-9-F
+30-3-9-G
+30-3-9-H
+30-3-9-I
+30-3-9-J
+30-3-9-K
+30-3-9-L
+30-3-9-M
+30-3-9-N
+30-3-9-O
+30-3-10-A
+30-3-10-B
+30-3-10-C
+30-3-10-D
+30-3-10-E
+30-3-10-F
+30-3-10-G
+30-3-10-H
+30-3-10-I
+30-3-10-J
+30-3-10-K
+30-3-10-L
+30-3-10-M
+30-3-10-N
+30-3-10-O
+30-3-11-A
+30-3-11-B
+30-3-11-C
+30-3-11-D
+30-3-11-E
+30-3-11-F
+30-3-11-G
+30-3-11-H
+30-3-11-I
+30-3-11-J
+30-3-11-K
+30-3-11-L
+30-3-11-M
+30-3-11-N
+30-3-11-O
+30-3-12-A
+30-3-12-B
+30-3-12-C
+30-3-12-D
+30-3-12-E
+30-3-12-F
+30-3-12-G
+30-3-12-H
+30-3-12-I
+30-3-12-J
+30-3-12-K
+30-3-12-L
+30-3-12-M
+30-3-12-N
+30-3-12-O
+30-3-13-A
+30-3-13-B
+30-3-13-C
+30-3-13-D
+30-3-13-E
+30-3-13-F
+30-3-13-G
+30-3-13-H
+30-3-13-I
+30-3-13-J
+30-3-13-K
+30-3-13-L
+30-3-13-M
+30-3-13-N
+30-3-13-O
+30-3-14-A
+30-3-14-B
+30-3-14-C
+30-3-14-D
+30-3-14-E
+30-3-14-F
+30-3-14-G
+30-3-14-H
+30-3-14-I
+30-3-14-J
+30-3-14-K
+30-3-14-L
+30-3-14-M
+30-3-14-N
+30-3-14-O
+30-3-15-A
+30-3-15-B
+30-3-15-C
+30-3-15-D
+30-3-15-E
+30-3-15-F
+30-3-15-G
+30-3-15-H
+30-3-15-I
+30-3-15-J
+30-3-15-K
+30-3-15-L
+30-3-15-M
+30-3-15-N
+30-3-15-O
+30-3-16-A
+30-3-16-B
+30-3-16-C
+30-3-16-D
+30-3-16-E
+30-3-16-F
+30-3-16-G
+30-3-16-H
+30-3-16-I
+30-3-16-J
+30-3-16-K
+30-3-16-L
+30-3-16-M
+30-3-16-N
+30-3-16-O
+30-3-17-A
+30-3-17-B
+30-3-17-C
+30-3-17-D
+30-3-17-E
+30-3-17-F
+30-3-17-G
+30-3-17-H
+30-3-17-I
+30-3-17-J
+30-3-17-K
+30-3-17-L
+30-3-17-M
+30-3-17-N
+30-3-17-O
+30-3-18-A
+30-3-18-B
+30-3-18-C
+30-3-18-D
+30-3-18-E
+30-3-18-F
+30-3-18-G
+30-3-18-H
+30-3-18-I
+30-3-18-J
+30-3-18-K
+30-3-18-L
+30-3-18-M
+30-3-18-N
+30-3-18-O
+30-3-19-A
+30-3-19-B
+30-3-19-C
+30-3-19-D
+30-3-19-E
+30-3-19-F
+30-3-19-G
+30-3-19-H
+30-3-19-I
+30-3-19-J
+30-3-19-K
+30-3-19-L
+30-3-19-M
+30-3-19-N
+30-3-19-O
+30-3-20-A
+30-3-20-B
+30-3-20-C
+30-3-20-D
+30-3-20-E
+30-3-20-F
+30-3-20-G
+30-3-20-H
+30-3-20-I
+30-3-20-J
+30-3-20-K
+30-3-20-L
+30-3-20-M
+30-3-20-N
+30-3-20-O
+30-3-21-A
+30-3-21-B
+30-3-21-C
+30-3-21-D
+30-3-21-E
+30-3-21-F
+30-3-21-G
+30-3-21-H
+30-3-21-I
+30-3-21-J
+30-3-21-K
+30-3-21-L
+30-3-21-M
+30-3-21-N
+30-3-21-O
+30-3-22-A
+30-3-22-B
+30-3-22-C
+30-3-22-D
+30-3-22-E
+30-3-22-F
+30-3-22-G
+30-3-22-H
+30-3-22-I
+30-3-22-J
+30-3-22-K
+30-3-22-L
+30-3-22-M
+30-3-22-N
+30-3-22-O
+30-3-23-A
+30-3-23-B
+30-3-23-C
+30-3-23-D
+30-3-23-E
+30-3-23-F
+30-3-23-G
+30-3-23-H
+30-3-23-I
+30-3-23-J
+30-3-23-K
+30-3-23-L
+30-3-23-M
+30-3-23-N
+30-3-23-O
+30-3-24-A
+30-3-24-B
+30-3-24-C
+30-3-24-D
+30-3-24-E
+30-3-24-F
+30-3-24-G
+30-3-24-H
+30-3-24-I
+30-3-24-J
+30-3-24-K
+30-3-24-L
+30-3-24-M
+30-3-24-N
+30-3-24-O
+30-3-25-A
+30-3-25-B
+30-3-25-C
+30-3-25-D
+30-3-25-E
+30-3-25-F
+30-3-25-G
+30-3-25-H
+30-3-25-I
+30-3-25-J
+30-3-25-K
+30-3-25-L
+30-3-25-M
+30-3-25-N
+30-3-25-O
+30-3-26-A
+30-3-26-B
+30-3-26-C
+30-3-26-D
+30-3-26-E
+30-3-26-F
+30-3-26-G
+30-3-26-H
+30-3-26-I
+30-3-26-J
+30-3-26-K
+30-3-26-L
+30-3-26-M
+30-3-26-N
+30-3-26-O
+30-3-27-A
+30-3-27-B
+30-3-27-C
+30-3-27-D
+30-3-27-E
+30-3-27-F
+30-3-27-G
+30-3-27-H
+30-3-27-I
+30-3-27-J
+30-3-27-K
+30-3-27-L
+30-3-27-M
+30-3-27-N
+30-3-27-O
+30-3-28-A
+30-3-28-B
+30-3-28-C
+30-3-28-D
+30-3-28-E
+30-3-28-F
+30-3-28-G
+30-3-28-H
+30-3-28-I
+30-3-28-J
+30-3-28-K
+30-3-28-L
+30-3-28-M
+30-3-28-N
+30-3-28-O
+30-3-29-A
+30-3-29-B
+30-3-29-C
+30-3-29-D
+30-3-29-E
+30-3-29-F
+30-3-29-G
+30-3-29-H
+30-3-29-I
+30-3-29-J
+30-3-29-K
+30-3-29-L
+30-3-29-M
+30-3-29-N
+30-3-29-O
+30-3-30-A
+30-3-30-B
+30-3-30-C
+30-3-30-D
+30-3-30-E
+30-3-30-F
+30-3-30-G
+30-3-30-H
+30-3-30-I
+30-3-30-J
+30-3-30-K
+30-3-30-L
+30-3-30-M
+30-3-30-N
+30-3-30-O
+30-3-31-A
+30-3-31-B
+30-3-31-C
+30-3-31-D
+30-3-31-E
+30-3-31-F
+30-3-31-G
+30-3-31-H
+30-3-31-I
+30-3-31-J
+30-3-31-K
+30-3-31-L
+30-3-31-M
+30-3-31-N
+30-3-31-O
+30-3-32-A
+30-3-32-B
+30-3-32-C
+30-3-32-D
+30-3-32-E
+30-3-32-F
+30-3-32-G
+30-3-32-H
+30-3-33-A
+30-3-33-B
+30-3-33-C
+30-3-33-D
+30-3-33-E
+30-3-33-F
+30-3-33-G
+30-3-33-H
+30-4-1-A
+30-4-1-B
+30-4-1-C
+30-4-1-D
+30-4-1-E
+30-4-1-F
+30-4-1-G
+30-4-1-H
+30-4-1-I
+30-4-1-J
+30-4-1-K
+30-4-1-L
+30-4-1-M
+30-4-1-N
+30-4-1-O
+30-4-2-A
+30-4-2-B
+30-4-2-C
+30-4-2-D
+30-4-2-E
+30-4-2-F
+30-4-2-G
+30-4-2-H
+30-4-2-I
+30-4-2-J
+30-4-2-K
+30-4-2-L
+30-4-2-M
+30-4-2-N
+30-4-2-O
+30-4-3-A
+30-4-3-B
+30-4-3-C
+30-4-3-D
+30-4-3-E
+30-4-3-F
+30-4-3-G
+30-4-3-H
+30-4-3-I
+30-4-3-J
+30-4-3-K
+30-4-3-L
+30-4-3-M
+30-4-3-N
+30-4-3-O
+30-4-4-A
+30-4-4-B
+30-4-4-C
+30-4-4-D
+30-4-4-E
+30-4-4-F
+30-4-4-G
+30-4-4-H
+30-4-4-I
+30-4-4-J
+30-4-4-K
+30-4-4-L
+30-4-4-M
+30-4-4-N
+30-4-4-O
+30-4-5-A
+30-4-5-B
+30-4-5-C
+30-4-5-D
+30-4-5-E
+30-4-5-F
+30-4-5-G
+30-4-5-H
+30-4-5-I
+30-4-5-J
+30-4-5-K
+30-4-5-L
+30-4-5-M
+30-4-5-N
+30-4-5-O
+30-4-6-A
+30-4-6-B
+30-4-6-C
+30-4-6-D
+30-4-6-E
+30-4-6-F
+30-4-6-G
+30-4-6-H
+30-4-6-I
+30-4-6-J
+30-4-6-K
+30-4-6-L
+30-4-6-M
+30-4-6-N
+30-4-6-O
+30-4-7-A
+30-4-7-B
+30-4-7-C
+30-4-7-D
+30-4-7-E
+30-4-7-F
+30-4-7-G
+30-4-7-H
+30-4-7-I
+30-4-7-J
+30-4-7-K
+30-4-7-L
+30-4-7-M
+30-4-7-N
+30-4-7-O
+30-4-8-A
+30-4-8-B
+30-4-8-C
+30-4-8-D
+30-4-8-E
+30-4-8-F
+30-4-8-G
+30-4-8-H
+30-4-8-I
+30-4-8-J
+30-4-8-K
+30-4-8-L
+30-4-8-M
+30-4-8-N
+30-4-8-O
+30-4-9-A
+30-4-9-B
+30-4-9-C
+30-4-9-D
+30-4-9-E
+30-4-9-F
+30-4-9-G
+30-4-9-H
+30-4-9-I
+30-4-9-J
+30-4-9-K
+30-4-9-L
+30-4-9-M
+30-4-9-N
+30-4-9-O
+30-4-10-A
+30-4-10-B
+30-4-10-C
+30-4-10-D
+30-4-10-E
+30-4-10-F
+30-4-10-G
+30-4-10-H
+30-4-10-I
+30-4-10-J
+30-4-10-K
+30-4-10-L
+30-4-10-M
+30-4-10-N
+30-4-10-O
+30-4-11-A
+30-4-11-B
+30-4-11-C
+30-4-11-D
+30-4-11-E
+30-4-11-F
+30-4-11-G
+30-4-11-H
+30-4-11-I
+30-4-11-J
+30-4-11-K
+30-4-11-L
+30-4-11-M
+30-4-11-N
+30-4-11-O
+30-4-12-A
+30-4-12-B
+30-4-12-C
+30-4-12-D
+30-4-12-E
+30-4-12-F
+30-4-12-G
+30-4-12-H
+30-4-12-I
+30-4-12-J
+30-4-12-K
+30-4-12-L
+30-4-12-M
+30-4-12-N
+30-4-12-O
+30-4-13-A
+30-4-13-B
+30-4-13-C
+30-4-13-D
+30-4-13-E
+30-4-13-F
+30-4-13-G
+30-4-13-H
+30-4-13-I
+30-4-13-J
+30-4-13-K
+30-4-13-L
+30-4-13-M
+30-4-13-N
+30-4-13-O
+30-4-14-A
+30-4-14-B
+30-4-14-C
+30-4-14-D
+30-4-14-E
+30-4-14-F
+30-4-14-G
+30-4-14-H
+30-4-14-I
+30-4-14-J
+30-4-14-K
+30-4-14-L
+30-4-14-M
+30-4-14-N
+30-4-14-O
+30-4-15-A
+30-4-15-B
+30-4-15-C
+30-4-15-D
+30-4-15-E
+30-4-15-F
+30-4-15-G
+30-4-15-H
+30-4-15-I
+30-4-15-J
+30-4-15-K
+30-4-15-L
+30-4-15-M
+30-4-15-N
+30-4-15-O
+30-4-16-A
+30-4-16-B
+30-4-16-C
+30-4-16-D
+30-4-16-E
+30-4-16-F
+30-4-16-G
+30-4-16-H
+30-4-16-I
+30-4-16-J
+30-4-16-K
+30-4-16-L
+30-4-16-M
+30-4-16-N
+30-4-16-O
+30-4-17-A
+30-4-17-B
+30-4-17-C
+30-4-17-D
+30-4-17-E
+30-4-17-F
+30-4-17-G
+30-4-17-H
+30-4-17-I
+30-4-17-J
+30-4-17-K
+30-4-17-L
+30-4-17-M
+30-4-17-N
+30-4-17-O
+30-4-18-A
+30-4-18-B
+30-4-18-C
+30-4-18-D
+30-4-18-E
+30-4-18-F
+30-4-18-G
+30-4-18-H
+30-4-18-I
+30-4-18-J
+30-4-18-K
+30-4-18-L
+30-4-18-M
+30-4-18-N
+30-4-18-O
+30-4-19-A
+30-4-19-B
+30-4-19-C
+30-4-19-D
+30-4-19-E
+30-4-19-F
+30-4-19-G
+30-4-19-H
+30-4-19-I
+30-4-19-J
+30-4-19-K
+30-4-19-L
+30-4-19-M
+30-4-19-N
+30-4-19-O
+30-4-20-A
+30-4-20-B
+30-4-20-C
+30-4-20-D
+30-4-20-E
+30-4-20-F
+30-4-20-G
+30-4-20-H
+30-4-20-I
+30-4-20-J
+30-4-20-K
+30-4-20-L
+30-4-20-M
+30-4-20-N
+30-4-20-O
+30-4-21-A
+30-4-21-B
+30-4-21-C
+30-4-21-D
+30-4-21-E
+30-4-21-F
+30-4-21-G
+30-4-21-H
+30-4-21-I
+30-4-21-J
+30-4-21-K
+30-4-21-L
+30-4-21-M
+30-4-21-N
+30-4-21-O
+30-4-22-A
+30-4-22-B
+30-4-22-C
+30-4-22-D
+30-4-22-E
+30-4-22-F
+30-4-22-G
+30-4-22-H
+30-4-22-I
+30-4-22-J
+30-4-22-K
+30-4-22-L
+30-4-22-M
+30-4-22-N
+30-4-22-O
+30-4-23-A
+30-4-23-B
+30-4-23-C
+30-4-23-D
+30-4-23-E
+30-4-23-F
+30-4-23-G
+30-4-23-H
+30-4-23-I
+30-4-23-J
+30-4-23-K
+30-4-23-L
+30-4-23-M
+30-4-23-N
+30-4-23-O
+30-4-24-A
+30-4-24-B
+30-4-24-C
+30-4-24-D
+30-4-24-E
+30-4-24-F
+30-4-24-G
+30-4-24-H
+30-4-24-I
+30-4-24-J
+30-4-24-K
+30-4-24-L
+30-4-24-M
+30-4-24-N
+30-4-24-O
+30-4-25-A
+30-4-25-B
+30-4-25-C
+30-4-25-D
+30-4-25-E
+30-4-25-F
+30-4-25-G
+30-4-25-H
+30-4-25-I
+30-4-25-J
+30-4-25-K
+30-4-25-L
+30-4-25-M
+30-4-25-N
+30-4-25-O
+30-4-26-A
+30-4-26-B
+30-4-26-C
+30-4-26-D
+30-4-26-E
+30-4-26-F
+30-4-26-G
+30-4-26-H
+30-4-26-I
+30-4-26-J
+30-4-26-K
+30-4-26-L
+30-4-26-M
+30-4-26-N
+30-4-26-O
+30-4-27-A
+30-4-27-B
+30-4-27-C
+30-4-27-D
+30-4-27-E
+30-4-27-F
+30-4-27-G
+30-4-27-H
+30-4-27-I
+30-4-27-J
+30-4-27-K
+30-4-27-L
+30-4-27-M
+30-4-27-N
+30-4-27-O
+30-4-28-A
+30-4-28-B
+30-4-28-C
+30-4-28-D
+30-4-28-E
+30-4-28-F
+30-4-28-G
+30-4-28-H
+30-4-28-I
+30-4-28-J
+30-4-28-K
+30-4-28-L`.trim().split('\n');
+
+const data = {};
+ALL_PILES.forEach(id => {
+  const parts = id.trim().split('-');
+  const sk = 'S' + parts[1], tk = 'T' + parts[2], pile = parts[3];
+  if (!data[sk]) data[sk] = {};
+  if (!data[sk][tk]) data[sk][tk] = {};
+  data[sk][tk][pile] = { phase: null, name: null, equipment: null, discipline: null, ts: null };
+});
+
+let state = { view: 'discipline', discipline: null, name: '', equipment: '', section: null, tracker: null, selectedPile: null };
+
+function save() {
+  try { localStorage.setItem('sm_b30_v3', JSON.stringify({ data, discipline: state.discipline, name: state.name, equipment: state.equipment })); } catch(e) {}
+}
+function loadSaved() {
+  try {
+    const s = localStorage.getItem('sm_b30_v3');
+    if (!s) return;
+    const p = JSON.parse(s);
+    if (p.data) Object.keys(p.data).forEach(sk => {
+      if (!data[sk]) return;
+      Object.keys(p.data[sk]).forEach(tk => {
+        if (!data[sk][tk]) return;
+        Object.keys(p.data[sk][tk]).forEach(pile => {
+          if (data[sk][tk][pile] !== undefined) data[sk][tk][pile] = p.data[sk][tk][pile];
+        });
+      });
+    });
+    if (p.discipline && p.name) {
+      state.discipline = p.discipline;
+      state.name = p.name;
+      state.equipment = p.equipment || '';
+      state.view = 'home';
+    }
+  } catch(e) {}
+}
+loadSaved();
+
+function getTrackerStats(sk, tk) {
+  const piles = data[sk][tk], keys = Object.keys(piles);
+  const total = keys.length;
+  const done = keys.filter(p => piles[p].phase === 'complete').length;
+  const started = keys.filter(p => piles[p].phase && piles[p].phase !== 'complete').length;
+  return { total, done, started };
+}
+function getSectionStats(sk) {
+  let total = 0, done = 0;
+  Object.keys(data[sk]).forEach(tk => { const s = getTrackerStats(sk, tk); total += s.total; done += s.done; });
+  return { total, done };
+}
+function pillClass(done, total, started) {
+  if (done === total && total > 0) return 'pill-done';
+  if (done > 0 || started > 0) return 'pill-part';
+  return 'pill-none';
+}
+
+function updateHeader() {
+  const backBtn = document.getElementById('back-btn');
+  const title = document.getElementById('header-title');
+  const sub = document.getElementById('header-sub');
+  const banner = document.getElementById('id-banner');
+  const idMain = document.getElementById('id-main');
+  const idSub = document.getElementById('id-sub');
+
+  const showBanner = !['discipline','identity'].includes(state.view);
+  banner.style.display = showBanner ? 'flex' : 'none';
+  if (showBanner && state.name) {
+    idMain.textContent = state.name + ' · ' + (state.discipline || '');
+    idSub.textContent = state.equipment || 'No equipment entered';
+  }
+
+  if (state.view === 'discipline') {
+    backBtn.classList.remove('visible');
+    title.textContent = 'Block 30';
+    sub.textContent = 'Maryvale Solar Farm · SOLMECH';
+  } else if (state.view === 'identity') {
+    backBtn.classList.add('visible');
+    title.textContent = 'Your details';
+    sub.textContent = state.discipline || '';
+  } else if (state.view === 'home') {
+    backBtn.classList.remove('visible');
+    title.textContent = 'Block 30';
+    sub.textContent = 'Maryvale Solar Farm · SOLMECH';
+  } else if (state.view === 'section') {
+    backBtn.classList.add('visible');
+    title.textContent = 'Section ' + state.section.replace('S','');
+    sub.textContent = 'Block 30 · Maryvale';
+  } else if (state.view === 'tracker') {
+    backBtn.classList.add('visible');
+    title.textContent = 'Tracker ' + state.tracker.replace('T','');
+    sub.textContent = 'Sec. ' + state.section.replace('S','') + ' · Block 30';
+  }
+}
+
+function render() {
+  updateHeader();
+  const screen = document.getElementById('screen');
+
+  if (state.view === 'discipline') {
+    screen.innerHTML = `
+      <div class="logo-area">
+        <div class="logo-text">SOLMEC<span>H</span></div>
+        <div class="logo-sub">Production Tracker · Block 30 · Maryvale</div>
+      </div>
+      <p class="section-label" style="margin-bottom:10px">Select your discipline</p>
+      <div class="disc-grid">
+        ${DISCIPLINES.map(d => `
+          <div class="disc-card ${state.discipline === d.id ? 'selected' : ''}" onclick="selectDiscipline('${d.id}')">
+            <div class="disc-icon" style="background:${d.color}">
+              <i class="ti ${d.icon}" style="color:${d.iconColor}"></i>
+            </div>
+            <div>
+              <div class="disc-label">${d.label}</div>
+              <div class="disc-desc">${d.desc}</div>
+            </div>
+            <i class="ti ti-check disc-check"></i>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  else if (state.view === 'identity') {
+    screen.innerHTML = `
+      <div class="form-card">
+        <div class="form-field">
+          <label class="form-label">Your name</label>
+          <input class="form-input" id="inp-name" type="text" placeholder="e.g. John Smith" value="${state.name}" autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Plant / Equipment</label>
+          <input class="form-input" id="inp-equip" type="text" placeholder="e.g. Rig 02, Excavator 3" value="${state.equipment}" autocomplete="off">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="confirmIdentity()">
+        <i class="ti ti-arrow-right"></i> Start
+      </button>`;
+    setTimeout(() => { const el = document.getElementById('inp-name'); if (el && !state.name) el.focus(); }, 100);
+  }
+
+  else if (state.view === 'home') {
+    const sections = Object.keys(data).sort();
+    let totalAll = 0, doneAll = 0;
+    sections.forEach(sk => { const s = getSectionStats(sk); totalAll += s.total; doneAll += s.done; });
+    const pctAll = totalAll ? Math.round(doneAll / totalAll * 100) : 0;
+    screen.innerHTML = `
+      <div class="summary-bar">
+        <div class="stat"><div class="stat-val">${totalAll}</div><div class="stat-lbl">Total piles</div></div>
+        <div class="stat"><div class="stat-val green">${doneAll}</div><div class="stat-lbl">Complete</div></div>
+        <div class="stat"><div class="stat-val ${pctAll===100?'green':pctAll>0?'amber':''}">${pctAll}%</div><div class="stat-lbl">Progress</div></div>
+      </div>
+      <p class="section-label">Sections</p>
+      <div class="list">
+        ${sections.map(sk => {
+          const s = getSectionStats(sk);
+          const pct = s.total ? Math.round(s.done / s.total * 100) : 0;
+          const tc = Object.keys(data[sk]).length;
+          const pc = pillClass(s.done, s.total, 0);
+          return `<div class="list-item" onclick="goSection('${sk}')">
+            <div><div class="li-label">Section ${sk.replace('S','')}</div><div class="li-meta">${tc} trackers · ${s.total} piles</div></div>
+            <div class="li-right"><span class="pill ${pc}">${pct}%</span><i class="ti ti-chevron-right chevron"></i></div>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  else if (state.view === 'section') {
+    const sk = state.section;
+    const trackers = Object.keys(data[sk]).sort((a,b) => parseInt(a.replace('T','')) - parseInt(b.replace('T','')));
+    screen.innerHTML = `
+      <p class="section-label">Trackers</p>
+      <div class="list">
+        ${trackers.map(tk => {
+          const s = getTrackerStats(sk, tk);
+          const pct = s.total ? Math.round(s.done / s.total * 100) : 0;
+          const pc = pillClass(s.done, s.total, s.started);
+          return `<div class="list-item" onclick="goTracker('${sk}','${tk}')">
+            <div><div class="li-label">Tracker ${tk.replace('T','')}</div><div class="li-meta">${s.total} piles · ${s.done} complete</div></div>
+            <div class="li-right"><span class="pill ${pc}">${pct}%</span><i class="ti ti-chevron-right chevron"></i></div>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  else if (state.view === 'tracker') {
+    const sk = state.section, tk = state.tracker;
+    const piles = data[sk][tk], pileKeys = Object.keys(piles).sort();
+    const stats = getTrackerStats(sk, tk);
+    screen.innerHTML = `
+      <div class="summary-bar">
+        <div class="stat"><div class="stat-val">${stats.total}</div><div class="stat-lbl">Piles</div></div>
+        <div class="stat"><div class="stat-val green">${stats.done}</div><div class="stat-lbl">Complete</div></div>
+        <div class="stat"><div class="stat-val amber">${stats.started}</div><div class="stat-lbl">In progress</div></div>
+      </div>
+      <div class="actions-row">
+        <button class="btn btn-primary btn-sm" onclick="markAll('complete')"><i class="ti ti-checks"></i> All complete</button>
+        <button class="btn btn-sm" onclick="markAll(null)"><i class="ti ti-refresh"></i> Reset</button>
+      </div>
+      <p class="section-label">Piles · tap to change phase</p>
+      <div class="pile-grid">
+        ${pileKeys.map(p => {
+          const ph = piles[p].phase;
+          const label = ph ? (PHASES.find(x => x.id === ph)?.label || ph) : '—';
+          return `<div class="pile-btn state-${ph||'none'} ${state.selectedPile===p?'selected':''}" onclick="selectPile('${p}')">
+            <div class="p-id">${p}</div><div class="p-phase">${label}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div id="phase-panel-container"></div>`;
+    if (state.selectedPile) renderPhasePanel();
+  }
+}
+
+function renderPhasePanel() {
+  const el = document.getElementById('phase-panel-container');
+  if (!el) return;
+  const p = state.selectedPile, sk = state.section, tk = state.tracker;
+  const cur = data[sk][tk][p]?.phase;
+  const ts = data[sk][tk][p]?.ts;
+  const who = data[sk][tk][p]?.name;
+  el.innerHTML = `
+    <div class="phase-panel">
+      <div class="phase-panel-title">Pile <strong>${p}</strong> — select phase</div>
+      <div class="phase-grid">
+        ${PHASES.map(ph => `
+          <div class="phase-opt ${cur===ph.id?'sel':''}" onclick="setPhase('${ph.id}')">
+            <span class="phase-dot" style="background:${ph.color}"></span>${ph.label}
+          </div>`).join('')}
+      </div>
+      <button class="btn" style="margin-top:0" onclick="state.selectedPile=null;render()">Close</button>
+      ${ts ? `<div class="ts-label">${who||'?'} · ${new Date(ts).toLocaleString('en-AU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>` : ''}
+    </div>`;
+}
+
+function selectDiscipline(id) {
+  state.discipline = id;
+  state.view = 'identity';
+  render();
+}
+function confirmIdentity() {
+  const n = document.getElementById('inp-name')?.value.trim();
+  const e = document.getElementById('inp-equip')?.value.trim();
+  if (!n) { alert('Please enter your name'); return; }
+  state.name = n;
+  state.equipment = e;
+  state.view = 'home';
+  save();
+  render();
+}
+function changeIdentity() { state.view = 'discipline'; render(); }
+function goSection(sk) { state.view = 'section'; state.section = sk; render(); }
+function goTracker(sk, tk) { state.view = 'tracker'; state.section = sk; state.tracker = tk; state.selectedPile = null; render(); }
+function goBack() {
+  if (state.view === 'tracker') { state.view = 'section'; state.selectedPile = null; }
+  else if (state.view === 'section') { state.view = 'home'; }
+  else if (state.view === 'identity') { state.view = 'discipline'; }
+  else if (state.view === 'home') { state.view = 'discipline'; }
+  render();
+}
+function selectPile(p) { state.selectedPile = state.selectedPile === p ? null : p; render(); }
+function setPhase(phase) {
+  const sk = state.section, tk = state.tracker, p = state.selectedPile;
+  data[sk][tk][p] = { phase, name: state.name, equipment: state.equipment, discipline: state.discipline, ts: Date.now() };
+  save(); render();
+}
+function markAll(phase) {
+  const sk = state.section, tk = state.tracker;
+  Object.keys(data[sk][tk]).forEach(p => {
+    data[sk][tk][p] = phase ? { phase, name: state.name, equipment: state.equipment, discipline: state.discipline, ts: Date.now() } : { phase: null, name: null, equipment: null, discipline: null, ts: null };
+  });
+  state.selectedPile = null; save(); render();
+}
+
+render();
+</script>
+</body>
+</html>
